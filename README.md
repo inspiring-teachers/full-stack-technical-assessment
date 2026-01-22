@@ -29,6 +29,16 @@ This starts both servers:
 
 ## Assessment Instructions
 
+**Time limit: 1 hour**
+
+| Part | Suggested Time |
+|------|---------------|
+| Setup + explore codebase | 5-10 min |
+| Part 1: Bug fix | 10-15 min |
+| Part 2: Feature implementation | 35-40 min |
+
+---
+
 ### Part 1: Bug Fix (Warmup)
 
 There is a bug in the application. The **delete flashcard** functionality is broken.
@@ -43,6 +53,49 @@ There is a bug in the application. The **delete flashcard** functionality is bro
 - The bug is in the backend code
 - Check the network requests in your browser's developer tools
 - Compare the delete endpoint implementation with similar endpoints
+
+---
+
+### Part 2: New Feature (Main Challenge)
+
+Add a **Study Session Results** feature to the application.
+
+**Requirements:**
+
+1. **Track answers during study mode**
+   - After revealing the answer (flipping the card), the user should be able to mark whether they got it **correct** or **wrong**
+   - Add two buttons: "Got it" (correct) and "Missed it" (wrong)
+   - The user must select one before moving to the next card
+
+2. **Display results after completing all cards**
+   - After the user has gone through ALL cards in the deck, show a results summary
+   - The summary should display:
+     - Total number of cards studied
+     - Number of correct answers
+     - Number of wrong answers
+     - Percentage score
+   - Include a "Study Again" button to restart the session
+
+3. **UX Considerations**
+   - The correct/wrong buttons should only appear after the card is flipped
+   - Make it clear which cards have been answered
+   - The results screen should be visually distinct from the study cards
+
+**Acceptance Criteria:**
+- [ ] User can mark each card as correct or wrong after flipping
+- [ ] User cannot skip a card without marking it
+- [ ] Results screen appears after all cards are completed
+- [ ] Results show correct count, wrong count, and percentage
+- [ ] User can restart the study session from results screen
+
+**Bonus (if time permits):**
+Add a "Review Mistakes" button on the results screen that lets users flip through only the cards they got wrong.
+
+**Evaluation Criteria:**
+- Code quality and TypeScript usage
+- Component structure and state management
+- User experience and edge case handling
+- CSS/styling consistency with existing design
 
 ---
 
