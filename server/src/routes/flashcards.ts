@@ -44,7 +44,7 @@ router.put('/:id', (req: Request, res: Response) => {
 
 // DELETE /api/flashcards/:id - Delete flashcard
 router.delete('/:id', (req: Request, res: Response) => {
-  const deleted = store.delete(req.params.id);
+  const deleted = store.delete(req.body.id);
   if (!deleted) {
     return res.status(404).json({ error: 'Flashcard not found' });
   }
