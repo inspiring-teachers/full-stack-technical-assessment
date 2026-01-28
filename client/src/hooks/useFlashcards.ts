@@ -37,8 +37,11 @@ export function useFlashcards() {
   }, []);
 
   const deleteFlashcard = useCallback(async (id: string) => {
-    await flashcardsApi.delete(id);
     setFlashcards((prev) => prev.filter((card) => card.id !== id));
+    try {
+      await flashcardsApi.delete(id);
+    } catch {
+    }
   }, []);
 
   return {

@@ -34,68 +34,97 @@ This starts both servers:
 | Part | Suggested Time |
 |------|---------------|
 | Setup + explore codebase | 5-10 min |
-| Part 1: Bug fix | 10-15 min |
-| Part 2: Feature implementation | 35-40 min |
+| Warmup | 5 min |
+| Part 1: Bug fixes | 20-25 min |
+| Part 2: Feature implementation | 30-35 min |
 
 ---
 
-### Part 1: Bug Fix (Warmup)
+### Warmup (5 minutes)
 
-There is a bug in the application. The **delete flashcard** functionality is broken.
+Get familiar with the codebase by completing this small task:
+
+**Task:** Add a character count display to the flashcard creation form.
+
+**Requirements:**
+- Show the current character count for both the "Front" and "Back" text fields
+- Display format: "X characters"
+- Update in real-time as the user types
+
+**Acceptance Criteria:**
+- [ ] Character count visible for front field
+- [ ] Character count visible for back field
+- [ ] Count updates as user types
+
+---
+
+### Part 1: Bug Fixes (20-25 minutes)
+
+The **delete flashcard** functionality is broken. There are **2 bugs** causing this - one in the backend and one in the frontend.
 
 **Your task:**
-1. Reproduce the bug by trying to delete a flashcard in the UI
-2. Investigate and identify the root cause
-3. Fix the bug
-4. Verify the fix works
+1. Try to delete a flashcard
+2. Notice it appears to work... but does it really?
+3. Find and fix BOTH bugs
+4. Verify the fix works correctly
 
-**Hints:**
-- The bug is in the backend code
-- Check the network requests in your browser's developer tools
-- Compare the delete endpoint implementation with similar endpoints
+**Acceptance Criteria:**
+- [ ] Delete functionality actually removes the card from the server
+- [ ] Errors are properly shown to the user when operations fail
+- [ ] UI stays in sync with the backend
 
 ---
 
-### Part 2: New Feature (Main Challenge)
+### Part 2: Batch Study Operations API (30-35 minutes)
 
-Add a **Study Session Results** feature to the application.
+Implement a single **batch operations endpoint** that processes multiple study actions in one request.
+
+**Endpoint:** `POST /api/study/batch`
+
+**Request format:**
+```json
+{
+  "sessionId": "optional-for-existing-session",
+  "operations": [
+    { "type": "start", "cardIds": ["1", "2", "3"] },
+    { "type": "answer", "cardId": "1", "result": "correct" },
+    { "type": "complete" }
+  ]
+}
+```
 
 **Requirements:**
 
-1. **Track answers during study mode**
-   - After revealing the answer (flipping the card), the user should be able to mark whether they got it **correct** or **wrong**
-   - Add two buttons: "Got it" (correct) and "Missed it" (wrong)
-   - The user must select one before moving to the next card
+1. **Backend: Operation Processing**
+   - Process operations in sequence
+   - Validate operation order (`start` first, `complete` only when all answered)
+   - Reject invalid operations (unknown cardId, duplicate answer, etc.)
+   - Return session state and any errors
 
-2. **Display results after completing all cards**
-   - After the user has gone through ALL cards in the deck, show a results summary
-   - The summary should display:
-     - Total number of cards studied
-     - Number of correct answers
-     - Number of wrong answers
-     - Percentage score
-   - Include a "Study Again" button to restart the session
+2. **Backend: Validation Rules**
+   - Cannot `answer` before `start` (unless sessionId provided)
+   - Cannot `answer` same card twice
+   - Cannot `complete` with unanswered cards
+   - Handle edge cases: empty array, invalid types, missing fields
 
-3. **UX Considerations**
-   - The correct/wrong buttons should only appear after the card is flipped
-   - Make it clear which cards have been answered
-   - The results screen should be visually distinct from the study cards
+3. **Frontend: Integration**
+   - Add "Got it" / "Missed it" buttons after card flip
+   - Send batch operation on each answer
+   - Display results when session complete
+   - "Study Again" starts new session
 
 **Acceptance Criteria:**
-- [ ] User can mark each card as correct or wrong after flipping
-- [ ] User cannot skip a card without marking it
-- [ ] Results screen appears after all cards are completed
-- [ ] Results show correct count, wrong count, and percentage
-- [ ] User can restart the study session from results screen
-
-**Bonus (if time permits):**
-Add a "Review Mistakes" button on the results screen that lets users flip through only the cards they got wrong.
+- [ ] Batch endpoint processes operations correctly
+- [ ] Invalid operations return meaningful errors
+- [ ] Frontend tracks answers via batch API
+- [ ] Results screen shows stats (total, correct, wrong, %)
+- [ ] Full flow works: start → answer all → complete → results
 
 **Evaluation Criteria:**
-- Code quality and TypeScript usage
-- Component structure and state management
-- User experience and edge case handling
-- CSS/styling consistency with existing design
+- API design and error handling
+- Validation logic completeness
+- State management approach
+- How candidate breaks down the problem
 
 ---
 
@@ -114,6 +143,7 @@ Add a "Review Mistakes" button on the results screen that lets users flip throug
 | POST | `/api/flashcards` | Create flashcard |
 | PUT | `/api/flashcards/:id` | Update flashcard |
 | DELETE | `/api/flashcards/:id` | Delete flashcard |
+| POST | `/api/study/batch` | Batch study operations |
 
 ## Project Structure
 
