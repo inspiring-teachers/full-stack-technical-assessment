@@ -77,54 +77,26 @@ The **delete flashcard** functionality is broken. There are **2 bugs** causing t
 
 ### Part 2: Batch Study Operations API (30-35 minutes)
 
-Implement a single **batch operations endpoint** that processes multiple study actions in one request.
+Implement `POST /api/study/batch` that processes multiple study operations in one request.
 
-**Endpoint:** `POST /api/study/batch`
+**Operations:**
+- `start` - begin session with card IDs
+- `answer` - record correct/wrong for a card
+- `complete` - finish session
 
-**Request format:**
-```json
-{
-  "sessionId": "optional-for-existing-session",
-  "operations": [
-    { "type": "start", "cardIds": ["1", "2", "3"] },
-    { "type": "answer", "cardId": "1", "result": "correct" },
-    { "type": "complete" }
-  ]
-}
-```
+**Validation rules:**
+- Cannot answer before starting
+- Cannot answer same card twice
+- Cannot complete with unanswered cards
 
-**Requirements:**
+**Return:** session state, processed count, any errors
 
-1. **Backend: Operation Processing**
-   - Process operations in sequence
-   - Validate operation order (`start` first, `complete` only when all answered)
-   - Reject invalid operations (unknown cardId, duplicate answer, etc.)
-   - Return session state and any errors
-
-2. **Backend: Validation Rules**
-   - Cannot `answer` before `start` (unless sessionId provided)
-   - Cannot `answer` same card twice
-   - Cannot `complete` with unanswered cards
-   - Handle edge cases: empty array, invalid types, missing fields
-
-3. **Frontend: Integration**
-   - Add "Got it" / "Missed it" buttons after card flip
-   - Send batch operation on each answer
-   - Display results when session complete
-   - "Study Again" starts new session
+**Frontend:** Integrate with StudyMode to track answers and show results when complete.
 
 **Acceptance Criteria:**
 - [ ] Batch endpoint processes operations correctly
 - [ ] Invalid operations return meaningful errors
-- [ ] Frontend tracks answers via batch API
-- [ ] Results screen shows stats (total, correct, wrong, %)
-- [ ] Full flow works: start → answer all → complete → results
-
-**Evaluation Criteria:**
-- API design and error handling
-- Validation logic completeness
-- State management approach
-- How candidate breaks down the problem
+- [ ] Frontend tracks answers and shows results (total, correct, wrong, %)
 
 ---
 
